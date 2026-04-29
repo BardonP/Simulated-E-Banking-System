@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>E-Banking System Login</title>
+    <title>Summit Bank Login</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Simulated E-Banking System</h1>
+    <h1><img src="images/summit_bank_logo.png" alt="Logo" class="logo"> Summit Bank</h1>
 
+    <form>
+        <div class="form-group">
+            <label for="username">Username: &nbsp;</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username"><br>
+        </div>
+        <div class="form-group password-group">
+            <label for="pwd">Password: &nbsp;</label>
+            <input type="password" id="pwd" name="pwd" placeholder="Enter your password"><br>
+        </div>
+        <div>
+            <button type="button" id="resetBtn">Reset Password</button>
+        </div>
+    </form>
+
+    <button id="loginBtn">Login</button>
+    
     <script src="app.js"></script>
 </body>
 </html>
