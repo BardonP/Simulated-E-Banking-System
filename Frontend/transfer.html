@@ -21,7 +21,32 @@
         </nav>
     </header>
 
-    <p>Transfer Funds</p>
+    <div class="dashboard-wrapper">
+        <div class="dashboard-main">
+            <section class="panel actions-panel">
+                <h2>Transfer Funds:</h2>
+                <div class="transfer-form-group">
+                    <label for="accountFrom">Account From:</label>
+                    <input type="text" id="accountFrom" class="transfer-form-input" list="accountList" placeholder="Select or type account">
+                </div>
+                <div class="transfer-form-group">
+                    <label for="accountTo">Account To:</label>
+                    <input type="text" id="accountTo" class="transfer-form-input" list="accountList" placeholder="Select or type account">
+                </div>
+                <div class="transfer-form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" class="transfer-form-input" placeholder="$0.00" step="0.01" min="0">
+                </div>
+                <button class="transfer-button">Submit Transfer</button>
+            </section>
+        </div>
+
+        <datalist id="accountList">
+            <option value="Checking Account">
+            <option value="Savings Account">
+        </datalist>
+    </div>
+    </div>
     
     <script src="app.js"></script>
 </body>
