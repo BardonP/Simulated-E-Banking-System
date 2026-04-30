@@ -1,3 +1,7 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 h1 {
     display: flex;
     align-items: center;
@@ -71,7 +75,7 @@ h1 {
         margin: 1rem 2rem;
     }
 
-    /* Style for the navigation */
+/* Style for the navigation */
     .top-nav {
         width: 100%;
         display: flex;
@@ -79,7 +83,7 @@ h1 {
         justify-content: space-between;
         gap: 1rem;
         padding: 0.75rem 1rem;
-        background-color: #ffffff;
+        background-color: #949df3;
         border-bottom: 1px solid #d1d5db;
         box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
         box-sizing: border-box;
@@ -121,35 +125,97 @@ h1 {
         transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
+    .nav-links a.active {
+        background: #4f46e5;
+        border-color: #4338ca;
+        color: #fff;
+        box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.25);
+    }
+
     .nav-links a:hover {
-        background: #a6b8f5;
+        background: #4f46e5;
         border-color: #c7d2fe;
+        color:#fff;
     }
 
-    /* Style for the account balances grid */
-    .grid {
-	display: grid;
-	grid-template-columns: auto auto;
-	justify-content: left;
+    .nav-links a#Logout:hover {
+        background: #c20202;
+        border-color: #c20202;
+        color: #fff;
     }
 
+/* Style for the dashboard content */
+    .dashboard-wrapper {
+        max-width: 100%;
+        margin: 1rem auto 2rem;
+        padding: 0 2rem;
+    }
+
+    .panel {
+        background-color: #ddebf3;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .dashboard-main {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .balances-panel {
+        flex: 0 0 360px;
+    }
+
+    .transactions-panel {
+        flex: 1;
+        min-width: 320px;
+    }
+
+    .actions-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 140px;
+    }
+
+    .balance-boxes {
+        display: grid;
+        gap: 1rem;
+    }
+
+/* Style for the balance boxes */
     .box {
-        position: relative;
-        margin: 5px 10px 10px 50px;
-        border: 5px solid black;
-        height: 200px;
-        width: 500px;
-        background-color: lightgrey;
+        width: 100%;
+        min-height: 120px;
+        border-radius: 0.75rem;
+        background-color: #ffffff;
         color: rgb(56, 75, 248);
         text-align: center;
-        overflow: hidden;
+        padding: 1.5rem;
     }
 
-    /* Style for transaction table */
+    .box h4 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0.5rem 0 1rem;
+        text-decoration: underline;
+    }
+
+    .box p {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+/* Style for transaction table */
     .transaction-table {
-        width: 25%;
+        width: 100%;
         border-collapse: collapse;
-        margin: 1rem 2rem 2rem;
+        margin-top: 1rem;
     }
 
     .transaction-table th,
@@ -162,4 +228,26 @@ h1 {
     .transaction-table th {
         background: #f8fafc;
         font-weight: 700;
+    }
+
+/* Style for dashboard buttons */
+    .dashBtnRow {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .dashBtn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 4rem;
+        margin: 0 15rem;
+        font-size: 1rem;
+        background-color: #014288;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
     }
