@@ -170,6 +170,10 @@ h1 {
         flex: 0 0 360px;
     }
 
+    .search-panel {
+        width: 100%;
+    }
+
     .transactions-panel {
         flex: 1;
         min-width: 320px;
@@ -184,20 +188,22 @@ h1 {
         gap: 1rem;
     }
 
-/* Style for the transfer form */
+/* Style for the transfer form and bill payment form */
     .transfer-form-group {
         display: flex;
         align-items: center;
         gap: 0.75rem;
         width: 100%;
-        max-width: 400px;
-        justify-content: space-between;
+        max-width: 600px;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
     }
 
     .transfer-form-group label {
-        min-width: 120px;
+        min-width: 140px;
         font-weight: 600;
         text-align: right;
+        white-space: nowrap;
     }
 
     .transfer-form-input {
@@ -243,32 +249,38 @@ h1 {
         margin: 0;
     }
 
-/* Style for transaction table */
-    .transaction-table {
+/* Style for data tables */
+    .table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 1rem;
     }
 
-    .transaction-table th,
-    .transaction-table td {
+    .table th,
+    .table td {
         border: 1px solid #d1d5db;
         padding: 1rem 1.25rem;
         text-align: center;
     }
 
-    .transaction-table th {
+    .table th {
         background: #626c75;
         color: #fff;
         font-weight: 700;
     }
 
-    .transaction-table tbody tr:nth-child(even) {
+    .table tbody tr:nth-child(even) {
         background: #f9fafb;
     } 
 
-    .transaction-table tbody tr:nth-child(odd) {
+    .table tbody tr:nth-child(odd) {
         background: #e6e7e7;
+    }
+
+    .export-buttons {
+        display: inline-flex;
+        gap: 0.75rem;
+        justify-content: center;
     }
 
 /* Style for dashboard buttons */
@@ -293,6 +305,11 @@ h1 {
         cursor: pointer;
     }
 
+    .dashBtn a {
+        color: #fff;
+        text-decoration: none;
+    }
+
 /* Style for the transfer button */
     .transfer-button {
         background-color: #014288;
@@ -303,4 +320,9 @@ h1 {
         margin: 1rem auto 0;
         font-size: 1rem;
         cursor: pointer;
+    }
+
+    .search-panel .transfer-button {
+        margin: 0;
+        align-self: center;
     }

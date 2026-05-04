@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Administrator Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/summit_bank_logo.png">
+</head>
+<body>
+    <header>
+        <nav class="top-nav">
+            <div class="nav-logo">
+                <img src="images/summit_bank_logo.png" alt="Logo" class="logo">
+            </div>
+            <div class="nav-links">
+                <a href="admin.html">Dashboard</a>
+                <a href="user_mgmt.html">Users</a>
+                <a href="reports.html">Reports</a>
+                <a href="index.html" id="Logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="dashboard-wrapper">
+        <section class="panel welcome-panel">
+            <h2>Welcome, [Administrator Name]!</h2>
+        </section>
+
+        <section class="panel transactions-panel">
+            <h3>System Activity Logs:</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="panel search-panel">
+            <div class="transfer-form-group">
+                <label>System Transfer Limit:</label>
+                <input type="number" class="transfer-form-input" placeholder="Limit">
+                <button class="transfer-button">Update</button>
+            </div>
+        </section>
+
+        <section class="panel actions-panel">
+            <div class="dashBtnRow">
+                <button class="dashBtn"><a href="user_mgmt.html">User Management</a></button>
+                <button class="dashBtn"><a href="reports.html">Generate Reports</a></button>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Banker Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/summit_bank_logo.png">
+</head>
+<body>
+    <header>
+        <nav class="top-nav">
+            <div class="nav-logo">
+                <img src="images/summit_bank_logo.png" alt="Logo" class="logo">
+            </div>
+            <div class="nav-links">
+                <a href="banker.html">Dashboard</a>
+                <a href="customer_search.html">Search</a>
+                <a href="index.html" id="Logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="dashboard-wrapper">
+        <section class="panel welcome-panel">
+            <h2>Welcome, [Banker Name]!</h2>
+        </section>
+
+        <div class="dashboard-main">
+            <section class="panel search-panel">
+                <div class="transfer-form-group">
+                    <label>Search Customer:</label>
+                    <input type="text" class="transfer-form-input" placeholder="Enter customer name or ID">
+                    <button class="transfer-button">Search</button>
+                </div>
+            </section>
+        </div>
+
+        <section class="panel transactions-panel">
+            <h3>Pending Transfers:</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
