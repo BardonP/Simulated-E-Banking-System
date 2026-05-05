@@ -202,11 +202,21 @@ h1 {
         align-self: center;
     }
 
+    .profile-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        justify-content: left;
+        min-height: 140px;
+        gap: 1rem;
+    }
+
 /* Style for the any textbox form */
     .textbox-form-group {
-        display: flex;
+        display: inline-block;
         align-items: center;
         gap: 0.75rem;
+        margin: 0.5rem 0;
         width: 100%;
         max-width: 600px;
         justify-content: flex-start;
@@ -291,10 +301,25 @@ h1 {
         background: #e6e7e7;
     }
 
+    .search-table {
+        width: 75%;
+    }
+
     .export-buttons {
         display: inline-flex;
         gap: 0.75rem;
         justify-content: center;
+    }
+
+    .tables-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap; 
+    }
+
+    .table-box {
+        flex: 1;
+        min-width: 300px; 
     }
 
 /* Style for dashboard buttons */

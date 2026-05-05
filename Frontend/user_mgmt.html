@@ -25,10 +25,25 @@
             <h2>User Management</h2>
         </section>
 
-        <section class="panel">
-            <h3>Add User</h3>
-            
-        </section>
+        <div class="dashboard-main">
+            <section class="panel table-panel">
+                <h3>Add User</h3>
+                <div class="textbox-form-group">
+                    <label for="enterUser">Enter User:</label>
+                    <input type="text" id="enterUser" class="textbox-form-input" placeholder="Enter user name">
+                </div>
+                <div class="textbox-form-group">
+                    <label for="role">Assign Role:</label>
+                    <select id="role" class="textbox-form-input">
+                        <option value="" disabled selected>Select role</option>
+                        <option value="customer">Customer</option>
+                        <option value="banker">Banker</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button class="submit-button">Submit</button>
+            </section>
+        </div>
 
         <section class="panel table-panel">
             <h3>Password Reset</h3>
