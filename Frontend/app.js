@@ -1,5 +1,4 @@
-console.log("Frontend app is running");
-
+//-----------------------Nav bar active link highlighting-----------------------
 const currentPage = window.location.pathname.split("/").pop();
 const navLinks = document.querySelectorAll('.nav-links a[href]');
 
@@ -10,7 +9,44 @@ navLinks.forEach(link => {
     }
 });
 
-// Invalid login handling
+//-----------------------Dark mode toggle-----------------------
+const darkModeToggle = document.getElementById("darkModeToggle");
+
+if (darkModeToggle) {
+    darkModeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            darkModeToggle.innerText = "Light Mode";
+        } else {
+            darkModeToggle.innerText = "Dark Mode";
+        }
+    });
+}
+
+// Load saved dark mode state on every page
+if (localStorage.getItem("darkMode") === "enabled") {
+    document.body.classList.add("dark-mode");
+
+    if (darkModeToggle) {
+        darkModeToggle.checked = true;
+    }
+}
+
+// Save new state when toggle is clicked
+if (darkModeToggle) {
+    darkModeToggle.addEventListener("change", () => {
+        if (darkModeToggle.checked) {
+            document.body.classList.add("dark-mode");
+            localStorage.setItem("darkMode", "enabled");
+        } else {
+            document.body.classList.remove("dark-mode");
+            localStorage.setItem("darkMode", "disabled");
+        }
+    });
+}
+
+//-------------------Invalid login handling---------------------
 document.getElementById("loginBtn").addEventListener("click", () => {
 
     const username = document.getElementById("username").value;
@@ -18,7 +54,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 
     const message = document.getElementById("loginMessage");
 
-    //--------------- Fake credentials for testing ----------------------------------------------DELETE LATER----------------------
+    //--------------- Fake credentials for testing --------------------------------------DELETE AND CALL TO BACKEND FOR USERNAME AND PWD----------------------
     if (username === "customer" && password === "1234") {
         window.location.href = "customer.html";
     }
@@ -40,7 +76,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
     }
 });
 
-//------------MFA functionality --------------
+//--------------------MFA functionality ------------------------
 const sendCodeBtn = document.getElementById("sendCodeBtn");
 
 if (sendCodeBtn) {
@@ -50,20 +86,23 @@ if (sendCodeBtn) {
         const username = document.getElementById("mfaUsername").value;
         const message = document.getElementById("mfaMessage");
 
-        if (username === "") {
+        //----------------------------------------------------------------------------------DELETE AND CALL TO BACKEND TO CHECK USERNAME----------------------
+        if (username === "admin") {
+
+            document.getElementById("usernameStep").style.display = "none";
+            document.getElementById("codeStep").style.display = "block";
+
+            message.style.color = "green";
+            message.innerText = "Verification code sent successfully";
+        }
+
+        else{
 
             message.style.color = "red";
-            message.innerText =
-                "Error: Enter a username";
+            message.innerText = "Error: Username does not exist";
 
             return;
         }
-
-        document.getElementById("usernameStep").style.display = "none";
-        document.getElementById("codeStep").style.display = "block";
-
-        message.style.color = "green";
-        message.innerText = "Verification code sent successfully";
     });
 }
 
@@ -74,10 +113,9 @@ if (verifyMfaBtn) {
     verifyMfaBtn.addEventListener("click", () => {
 
         const code = document.getElementById("mfaCode").value;
-
         const message = document.getElementById("mfaMessage");
 
-        // Temporary fake code------------------------------------------------------REPLACE----------------------
+        // Temporary fake code---------------------------------------------------------------------CALL TO BACKEND----------------------
         if (code === "123456") {
 
             document.getElementById("codeStep").style.display = "none";
@@ -90,8 +128,7 @@ if (verifyMfaBtn) {
 
             message.style.color = "red";
 
-            message.innerText =
-                "Error: Invalid verification code";
+            message.innerText = "Error: Invalid verification code";
 
             document.getElementById("mfaCode").value = "";
 
@@ -122,7 +159,7 @@ if (verifyPwdBtn) {
         } else {
 
             message.style.color = "green";
-            message.innerText = "Password reset successful!";
+            message.innerText = "Password reset successful!"; //---------------------------------------UPDATE PWD IN BACKEND----------------------
             document.getElementById("resetStep").style.display = "none";
         }
     });
