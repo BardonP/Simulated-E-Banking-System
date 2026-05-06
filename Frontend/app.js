@@ -47,34 +47,38 @@ if (darkModeToggle) {
 }
 
 //-------------------Invalid login handling---------------------
-document.getElementById("loginBtn").addEventListener("click", () => {
+const loginBtn = document.getElementById("loginBtn");
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("pwd").value;
+if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
 
-    const message = document.getElementById("loginMessage");
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("pwd").value;
 
-    //--------------- Fake credentials for testing --------------------------------------DELETE AND CALL TO BACKEND FOR USERNAME AND PWD----------------------
-    if (username === "customer" && password === "1234") {
-        window.location.href = "customer.html";
-    }
+        const message = document.getElementById("loginMessage");
 
-    else if (username === "banker" && password === "1234") {
-        window.location.href = "banker.html";
-    }
+        //--------------- Fake credentials for testing --------------------------------------DELETE AND CALL TO BACKEND FOR USERNAME AND PWD----------------------
+        if (username === "customer" && password === "1234") {
+            window.location.href = "customer.html";
+        }
 
-    else if (username === "admin" && password === "1234") {
-        window.location.href = "admin.html";
-    }
+        else if (username === "banker" && password === "1234") {
+            window.location.href = "banker.html";
+        }
 
-    //Invalid credentials pop-up and reset password field
-    else {
-        message.innerText = "Error: Invalid credentials";
+        else if (username === "admin" && password === "1234") {
+            window.location.href = "admin.html";
+        }
 
-        document.getElementById("pwd").value = "";
-        document.getElementById("pwd").focus();
-    }
-});
+        //Invalid credentials pop-up and reset password field
+        else {
+            message.innerText = "Error: Invalid credentials";
+
+            document.getElementById("pwd").value = "";
+            document.getElementById("pwd").focus();
+        }
+    });
+}
 
 //--------------------MFA functionality ------------------------
 const sendCodeBtn = document.getElementById("sendCodeBtn");
@@ -165,3 +169,11 @@ if (verifyPwdBtn) {
     });
 }
 
+//------------------Customer Dashboard---------------------------
+//ADD CUSTOMER NAME TO WELCOME MESSAGE
+const welcomeMessage = document.getElementById("welcomeMsg");
+
+if (welcomeMessage) {
+    const username = "John Doe";
+    welcomeMessage.innerText = `Welcome, ${username}!`;
+}
