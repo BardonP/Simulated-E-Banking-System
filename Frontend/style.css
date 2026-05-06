@@ -47,6 +47,7 @@ h1 {
         border-radius: 3px;
         cursor: pointer;
     }
+
     #resetBtn {
         background: none;
         border: none;
@@ -54,10 +55,18 @@ h1 {
         color: #c20202;
         font-size: 0.75rem;
         cursor: pointer;
+        font-style: italic;
     }
 
     #resetBtn:hover {
         color: #0056b3;
+    }
+
+    #loginMessage {
+        text-align: center;
+        color: red;
+        font-weight: bold;
+        margin-top: 1rem;
     }
 
 /* Basic style for dashboard */
