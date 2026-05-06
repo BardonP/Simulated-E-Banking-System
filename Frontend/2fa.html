@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multi-Factor Authentication</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/summit_bank_logo.png">
+</head>
+<body>
+    <h1><img src="images/summit_bank_logo.png" alt="Logo" class="logo"> Summit Bank</h1>
+
+    <div id="usernameStep">
+
+            <p>Enter your username to receive a verification code.</p>
+
+            <div class="form-group">
+                <label for="mfaUsername">Username:</label>
+
+                <input type="text" id="mfaUsername" placeholder="Enter username">
+            </div>
+
+            <button type="button" id="sendCodeBtn">Send Code</button>
+
+        </div>
+
+        <div id="codeStep"> <!--style="display: none;"-->
+
+            <p>Check your email for a 6-digit verification code.</p>
+
+            <div class="form-group">
+                <label for="mfaCode">Code:</label>
+
+                <input type="text" id="mfaCode" placeholder="Enter 6-digit code" maxlength="6">
+            </div>
+
+            <button type="button" id="verifyMfaBtn">Verify Code</button>
+
+        </div>
+
+        <p id="mfaMessage"></p>
+
+        <a href="index.html"><button id="loginBtn">Back to Login</button></a>
+
+    </section>
+
+
+    <script src="app.js"></script>
+</body>
+</html>
