@@ -47,11 +47,8 @@ if (sendCodeBtn) {
 
     sendCodeBtn.addEventListener("click", () => {
 
-        const username =
-            document.getElementById("mfaUsername").value;
-
-        const message =
-            document.getElementById("mfaMessage");
+        const username = document.getElementById("mfaUsername").value;
+        const message = document.getElementById("mfaMessage");
 
         if (username === "") {
 
@@ -62,37 +59,32 @@ if (sendCodeBtn) {
             return;
         }
 
-        // Hide username step
-        document.getElementById("usernameStep")
-            .style.display = "none";
-
-        // Show code step
-        document.getElementById("codeStep")
-            .style.display = "block";
+        document.getElementById("usernameStep").style.display = "none";
+        document.getElementById("codeStep").style.display = "block";
 
         message.style.color = "green";
-        message.innerText =
-            "Verification code sent successfully";
+        message.innerText = "Verification code sent successfully";
     });
 }
 
-const verifyMfaBtn =
-    document.getElementById("verifyMfaBtn");
+const verifyMfaBtn = document.getElementById("verifyMfaBtn");
 
 if (verifyMfaBtn) {
 
     verifyMfaBtn.addEventListener("click", () => {
 
-        const code =
-            document.getElementById("mfaCode").value;
+        const code = document.getElementById("mfaCode").value;
 
-        const message =
-            document.getElementById("mfaMessage");
+        const message = document.getElementById("mfaMessage");
 
-        // Temporary fake code------------------------------------------------------DELETE LATER----------------------
+        // Temporary fake code------------------------------------------------------REPLACE----------------------
         if (code === "123456") {
 
-            window.location.href = "customer.html";
+            document.getElementById("codeStep").style.display = "none";
+
+            message.style.color = "green";
+            message.innerText = "Verification successful!";
+            document.getElementById("resetStep").style.display = "block";
 
         } else {
 
@@ -107,3 +99,32 @@ if (verifyMfaBtn) {
         }
     });
 }
+
+const verifyPwdBtn = document.getElementById("verifypwdBtn");
+
+if (verifyPwdBtn) {
+
+    verifyPwdBtn.addEventListener("click", () => {
+
+        const newPassword = document.getElementById("newPwd").value;
+        const confirmNewPassword = document.getElementById("confirmPwd").value;
+
+        const message = document.getElementById("mfaMessage");
+
+        if (newPassword === "" || confirmNewPassword === "") {
+
+            message.style.color = "red";
+            message.innerText = "Error: Please fill in all fields";
+        } else if (newPassword !== confirmNewPassword) {
+
+            message.style.color = "red";
+            message.innerText = "Error: Passwords do not match";
+        } else {
+
+            message.style.color = "green";
+            message.innerText = "Password reset successful!";
+            document.getElementById("resetStep").style.display = "none";
+        }
+    });
+}
+
