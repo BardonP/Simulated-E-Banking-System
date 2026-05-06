@@ -18,7 +18,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 
     const message = document.getElementById("loginMessage");
 
-    //--------------- Fake credentials for testing ----------------
+    //--------------- Fake credentials for testing ----------------------------------------------DELETE LATER----------------------
     if (username === "customer" && password === "1234") {
         window.location.href = "customer.html";
     }
