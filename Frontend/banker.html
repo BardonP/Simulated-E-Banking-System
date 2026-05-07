@@ -32,61 +32,37 @@
             <section class="panel search-panel">
                 <div class="textbox-form-group">
                     <label>Search Customer:</label>
-                    <input type="text" class="textbox-form-input" placeholder="Enter customer name or ID">
-                    <button class="submit-button">Search</button>
+                    <input type="text" class="textbox-form-input" id="customerSearchInput" placeholder="Enter customer name or ID" list="customerSuggestions">
+                    <button class="submit-button" id="customerSearchDash">Search</button>
                 </div>
             </section>
         </div>
 
         <section class="panel table-panel">
             <h3>Pending Transfers:</h3>
-            <table class="table">
+            <table class="table" id="pendingTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>To</th>
+                        <th>From</th>
                         <th>Amount</th>
-                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    <!-- Recent transactions will be dynamically added here -->
                 </tbody>
             </table>
         </section>
+
+        <datalist id="customerSuggestions">
+            <option value="John Doe">
+            <option value="Jane Smith">
+            <option value="Michael Brown">
+            <option value="Sarah Johnson">
+            <option value="CUST-1001">
+            <option value="CUST-1002">
+        </datalist>
     </div>
 
     <script src="app.js"></script>

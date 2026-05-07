@@ -32,73 +32,45 @@
             <section class="panel search-panel">
                 <div class="textbox-form-group">
                     <label>Search Customer:</label>
-                    <input type="text" class="textbox-form-input" placeholder="Enter customer name or ID">
-                    <button class="submit-button">Search</button>
+                    <input type="text" class="textbox-form-input" id="customerSearchInput" placeholder="Enter customer name or ID" list="customerSuggestions">
+                    <button class="submit-button" id="customerSearchSearch">Search</button>
                 </div>
             </section>
         </div>
 
         <section class="panel table-panel">
-            <div class="table-row">
-                <div class="table-box">
+            <div class="table-row" id="threeSearchTables" style="display: none;">
+                <div class="table-box" id="customerAccountTable">
                     <h3>Customer Account</h3>
                     <table class="table search-table">
                         <thead>
                             <tr>
-                                <th>Name</th>
                                 <th>Account</th>
                                 <th>Balance</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            <!-- Customer Accounts will be dynamically added here -->
                         </tbody>
                     </table>
                 </div>
-                <div class="table-box">
+                <div class="table-box" id="customerTransactionHistoryTable">
                     <h3>Transaction History</h3>
                     <table class="table search-table">
                         <thead>
                             <tr>
                                 <th>Date</th>
+                                <th>Recipient/Sender</th>
                                 <th>Type</th>
                                 <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            <!-- Recent customer transactions will be dynamically added here -->
                         </tbody>
                     </table>
                 </div>
-                <div class="table-box">
+                <div class="table-box" id="customerBillsTable">
                     <h3>Payment Deadlines</h3>
                     <table class="table search-table">
                         <thead>
@@ -110,33 +82,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            <!-- Customer bills will be dynamically added here -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
+        <datalist id="customerSuggestions">
+            <option value="John Doe">
+            <option value="Jane Smith">
+            <option value="Michael Brown">
+            <option value="Sarah Johnson">
+            <option value="CUST-1001">
+            <option value="CUST-1002">
+        </datalist>
     </div>
-
-    
 
     <script src="app.js"></script>
 </body>

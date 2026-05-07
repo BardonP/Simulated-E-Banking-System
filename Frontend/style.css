@@ -448,6 +448,11 @@ p {
         text-align: center;
     }
 
+    .button-col {
+        width: 10%;
+        white-space: nowrap;
+    }
+
     .table th {
         background: #626c75;
         color: #fff;
@@ -462,10 +467,6 @@ p {
         background: #e6e7e7;
     }
 
-    .search-table {
-        width: 75%;
-    }
-
     .export-buttons {
         display: inline-flex;
         gap: 0.75rem;
@@ -473,9 +474,9 @@ p {
     }
 
     .tables-row {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap; 
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap; 
     }
 
     .table-box {
@@ -551,4 +552,31 @@ p {
     .status-late {
         color: red;
         font-weight: bold;
+    }
+
+/* Banker action buttons */
+    .banker-actions-buttons {
+        display: inline-flex;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .approve-button {
+        background-color: #22c55e;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+    }
+
+    .deny-button {
+        background-color: #ef4444;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        cursor: pointer;
     }

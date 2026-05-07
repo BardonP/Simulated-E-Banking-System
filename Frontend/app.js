@@ -343,3 +343,161 @@ if (saveChanges) {
     });
 }
 
+//--------------------------------------Banker Dashboard---------------------------------
+//customer search autocomplete (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR CUSTOMER NAMES----------------------
+
+//dashboard customer search button redirects to customer search page with query
+const customerSearchDash = document.getElementById("customerSearchDash");
+
+if (customerSearchDash) {
+    customerSearchDash.addEventListener("click", () => {
+        const input = document.getElementById("customerSearchInput");
+        const query = input.value.trim();
+
+        if (query === "") {
+            alert("Please enter a customer name or ID to search.");
+            return;
+        }
+        
+        window.location.href = `customer_search.html?query=${encodeURIComponent(query)}`;
+
+    });
+}
+
+const searchInput = document.getElementById("customerSearchInput");
+const searchTables = document.getElementById("threeSearchTables");
+
+    if (searchInput && searchTables) {
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get("query");
+
+        if (query) {
+            searchInput.value = query;
+            searchTables.style.display = "block";
+        }
+    }
+
+//pending transactions table (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR PENDING TRANSACTIONS----------------------
+const pendingTableBody = document.querySelector("#pendingTable tbody");
+
+if (pendingTableBody) {
+    const pendingTransactions = [
+        { from: "Jim Bean", to: "John Doe", amount: "$11,000.00", actions: "Approve/Deny" },
+        { from: "Jim Bean", to: "Tim Bob", amount: "$33,000.00", actions: "Approve/Deny" },
+        { from: "Michael Brown", to: "Ray Allen", amount: "$47,000.00", actions: "Approve/Deny" },
+    ];
+    pendingTransactions.forEach((transaction) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${transaction.from}</td>
+            <td>${transaction.to}</td>
+            <td>${transaction.amount}</td>
+            <td class="button-col"><div class="banker-actions-buttons"><button class="approve-button">Approve</button><button class="deny-button">Deny</button></div></td>
+        `;
+        pendingTableBody.appendChild(row);
+    });
+}
+
+//approve and deny buttons (temporary functionality for testing)----------------------CALL TO BACKEND TO APPROVE OR DENY TRANSFER----------------------
+if (pendingTableBody) {
+    pendingTableBody.addEventListener("click", (event) => {
+
+        // Approve
+        if (event.target.classList.contains("approve-button")) {
+
+            alert("Transfer Approved!");
+
+            // Remove row
+            event.target.closest("tr").remove();
+        }
+
+        // Deny
+        if (event.target.classList.contains("deny-button")) {
+
+            alert("Transfer Denied!");
+
+            // Remove row
+            event.target.closest("tr").remove();
+        }
+    });
+}
+
+//------------------------------------------------Customer Search---------------------------------
+//customer search button on customer search page displays tables with results 
+const customerSearch = document.getElementById("customerSearchSearch");
+
+if (customerSearch) {
+    customerSearch.addEventListener("click", () => {
+        if (customerSearchInput.value === "") {
+            alert("Please enter a customer name or ID to search.");
+            return;
+        } else {
+            //-------------------------------------------------------------------------------------------------CALL TO BACKEND TO QUERY----------------------
+            document.getElementById("threeSearchTables").style.display = "block";
+        }
+    });
+}
+
+//customer search results tables
+const customerAccountTableBody = document.querySelector("#customerAccountTable tbody");
+
+if (customerAccountTableBody) {
+    const customerAccounts = [
+        { accountType: "Checking", balance: "$1,000.00" },
+        { accountType: "Savings", balance: "$5,000.00" },
+    ];
+    customerAccounts.forEach((account) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${account.accountType}</td>
+            <td>${account.balance}</td>
+        `;
+        customerAccountTableBody.appendChild(row);
+    });
+}
+
+const customerTransactionHistoryTableBody = document.querySelector("#customerTransactionHistoryTable tbody");
+
+if (customerTransactionHistoryTableBody) {
+    const customerTransactionHistory = [
+        { date: "05/01/2026", to: "John Doe", type: "Sent", amount: "$1,000.00" },
+        { date: "05/03/2026", to: "Jane Smith", type: "Received", amount: "$500.00" },
+    ];
+    customerTransactionHistory.forEach((custTransaction) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${custTransaction.date}</td>
+            <td>${custTransaction.to}</td>
+            <td>${custTransaction.type}</td>
+            <td>${custTransaction.amount}</td>
+        `;
+        customerTransactionHistoryTableBody.appendChild(row);
+    });
+}
+const customerBillsTableBody = document.querySelector("#customerBillsTable tbody");
+
+if (customerBillsTableBody) {
+    const customerBills = [
+        { payee: "Rent", amount: "$1,200.00", deadline: "05/01/2026", status: "Late" },
+        { payee: "Electricity", amount: "$200.00", deadline: "05/09/2026", status: "Unpaid" },
+        { payee: "Water", amount: "$110.00", deadline: "01/01/2026", status: "Complete" },
+        { payee: "Internet", amount: "$30.00", deadline: "05/07/2026", status: "Pending" },
+    ];
+    customerBills.forEach((bill) => {
+        const row = document.createElement("tr");
+
+        const statusClass = bill.status === "Complete" ? "status-complete" : bill.status === "Pending" ? "status-pending" : bill.status === "Late" ? "status-late" : "status-unpaid";
+
+        row.innerHTML = `
+            <td>${bill.payee}</td>
+            <td>${bill.amount}</td>
+            <td>${bill.deadline}</td>
+            <td class="${statusClass}">${bill.status}</td>
+        `;
+        customerBillsTableBody.appendChild(row);
+    });
+}
+
