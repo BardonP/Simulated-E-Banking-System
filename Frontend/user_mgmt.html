@@ -31,10 +31,14 @@
 
         <div class="dashboard-main">
             <section class="panel table-panel">
-                <h3>Add User</h3>
+                <h3>Assign Role</h3>
                 <div class="textbox-form-group">
                     <label for="enterUser">Enter User:</label>
-                    <input type="text" id="enterUser" class="textbox-form-input" placeholder="Enter user name">
+                    <input type="text" id="enterUser" class="textbox-form-input" placeholder="Enter user name" list="customerSuggestions">
+                    <datalist id="customerSuggestions">
+                        <option value="John Doe">
+                        <option value="Jane Smith">
+                    </datalist>
                 </div>
                 <div class="textbox-form-group">
                     <label for="role">Assign Role:</label>
@@ -45,39 +49,9 @@
                         <option value="admin">Admin</option>
                     </select>
                 </div>
-                <button class="submit-button">Submit</button>
+                <button class="submit-button" id="assignRoleBtn">Submit</button>
             </section>
         </div>
-
-        <section class="panel table-panel">
-            <h3>Password Reset</h3>
-            <table class="table user-reset-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Status</th>
-                        <th class="table-action-header"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="action-cell"><button class="reset-button">Reset</button></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="action-cell"><button class="reset-button">Reset</button></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="action-cell"><button class="reset-button">Reset</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
     </div>
 
     <script src="app.js"></script>

@@ -31,66 +31,34 @@
 
         <section class="panel table-panel">
             <h3>System Activity Logs:</h3>
-            <table class="table">
+            <table class="table" id="systemLogsTable">
                 <thead>
                     <tr>
                         <th>Time</th>
                         <th>User</th>
                         <th>Action</th>
+                        <th>Flag</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    <!-- System logs will be dynamically added here -->
                 </tbody>
             </table>
         </section>
 
         <section class="panel search-panel">
+            <h4 id="currentTransferLimit"></h4>
             <div class="textbox-form-group">
                 <label>System Transfer Limit:</label>
-                <input type="number" class="textbox-form-input" placeholder="Limit">
-                <button class="submit-button">Update</button>
+                <input type="number" class="textbox-form-input" id="limitAmount" placeholder="Limit">
+                <button class="submit-button" id="updateLimitBtn">Update</button>
             </div>
         </section>
 
         <section class="panel actions-panel">
             <div class="dashBtnRow">
                 <button class="dashBtn"><a href="user_mgmt.html">User Management</a></button>
-                <button class="dashBtn"><a href="reports.html">Generate Reports</a></button>
+                <button class="dashBtn" id="generateReportBtn">Generate Reports</button>
             </div>
         </section>
     </div>

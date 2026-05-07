@@ -501,3 +501,334 @@ if (customerBillsTableBody) {
     });
 }
 
+//---------------------------------------------Admin Dashboard--------------------------------------
+//system logs table (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR SYSTEM LOGS----------------------
+const systemLogsTableBody = document.querySelector("#systemLogsTable tbody");
+const systemLogs = [ //---------------------------------------------temp------------------------------CALL TO BACKEND FOR SYSTEM LOGS----------------------
+        { time: "05/01/2026 10:00", user: "John Doe", action: "Login" },
+        { time: "05/01/2026 17:00", user: "Jane Smith", action: "Transfer Funds" },
+        { time: "05/02/2026 09:30", user: "Michael Brown", action: "Pay Bill" },
+    ];
+
+if (systemLogsTableBody) {
+    systemLogs.forEach((log) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${log.time}</td>
+            <td>${log.user}</td>
+            <td>${log.action}</td>
+            <td class="button-col"><button class="flag-button">Flag</button></td>
+        `;
+
+        row.querySelector(".flag-button").addEventListener("click", () => {
+
+            const flaggedLogs =
+                JSON.parse(localStorage.getItem("flaggedLogs")) || [];
+
+            // Check if already flagged
+            const alreadyFlagged = flaggedLogs.some(flaggedLog =>
+                flaggedLog.time === log.time &&
+                flaggedLog.user === log.user &&
+                flaggedLog.action === log.action
+            );
+
+            if (alreadyFlagged) {
+                alert("This event is already flagged.");
+                return;
+            }
+
+            // Add new flagged log
+            flaggedLogs.push({
+                time: log.time,
+                user: log.user,
+                action: log.action,
+                details: "Email: user@example.com" //-------temp-------------------------------CALL TO BACKEND TO GET USER EMAIL----------------------
+            });
+
+            localStorage.setItem(
+                "flaggedLogs",
+                JSON.stringify(flaggedLogs)
+            );
+
+            alert("Event flagged and added to reports.");
+        });
+
+        systemLogsTableBody.appendChild(row);
+    });
+}
+
+const flaggedEventsTableBody =
+    document.querySelector("#flaggedEventsTable tbody");
+
+if (flaggedEventsTableBody) {
+    const flaggedLogs =
+        JSON.parse(localStorage.getItem("flaggedLogs")) || [];
+
+    flaggedLogs.forEach((log) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${log.time}</td>
+            <td>${log.user}</td>
+            <td>${log.action}</td>
+            <td>${log.details}</td>
+            <td class="button-col"><div class="admin-actions-buttons"><button class="ignore-button">Ignore</button><button class="suspend-button">Suspend</button></div></td>
+        `;
+
+        flaggedEventsTableBody.appendChild(row);
+    });
+}
+
+//Show system limit
+const currentTransferLimit = document.getElementById("currentTransferLimit");
+
+let systemTransferLimit = localStorage.getItem("systemTransferLimit") || 50000; //-------------temp-------------------CALL TO BACKEND TO GET SYSTEM TRANSFER LIMIT----
+
+if (currentTransferLimit) {
+    currentTransferLimit.innerText = `Current System Transfer Limit: $${Number(systemTransferLimit).toLocaleString()}`;
+}
+
+//update system limit
+const updateLimitBtn = document.getElementById("updateLimitBtn");
+const limitInput = document.getElementById("limitAmount");
+
+if (updateLimitBtn) {
+    updateLimitBtn.addEventListener("click", () => {
+        if (limitInput.value === "" || limitInput.value < 50000) {
+            alert("Please enter a valid limit (must be at least $50,000).");
+            return;
+        } 
+
+        const newLimit = limitInput.value; //-------temp-------------------------------CALL TO BACKEND TO UPDATE LIMIT----------------------
+        
+        localStorage.setItem("systemTransferLimit", newLimit);
+
+        if (currentTransferLimit) {
+            currentTransferLimit.innerText = `Current System Transfer Limit: $${Number(newLimit).toLocaleString()}`;
+        }
+
+        alert(`System transfer limit updated to $${Number(newLimit).toLocaleString()}`);
+    });
+}
+
+//----------------------------------------------User Management--------------------------------------
+//add assign role functionality (temporary for testing)-------------------------------------------------CALL TO BACKEND TO ASSIGN ROLE----------------------
+const assignRoleBtn = document.getElementById("assignRoleBtn");
+
+if (assignRoleBtn) {
+    assignRoleBtn.addEventListener("click", () => {
+        const username = document.getElementById("enterUser").value;
+        const role = document.getElementById("role").value;
+
+        alert(`Assigned role of ${role} to user ${username}.`); //----------------------temp------------------------------CALL TO BACKEND TO ASSIGN ROLE----------------------
+    });
+}
+
+//----------------------------------------------Reports Page----------------------------------------
+//reports  overview table
+const reportsOverviewTableBody = document.querySelector("#reportsOverviewTable tbody");
+
+if (reportsOverviewTableBody) {
+    const reports = [];
+    reports.forEach((report) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${report.reportId}</td>
+            <td>${report.timestamp}</td>
+            <td class="button-col"><div class="admin-actions-buttons"><button class="csv-button">CSV</button><button class="pdf-button">PDF</button></div></td>
+        `;
+        reportsOverviewTableBody.appendChild(row);
+    });
+}
+
+//review flagged events buttons
+if (flaggedEventsTableBody) {
+
+    flaggedEventsTableBody.addEventListener("click", (event) => {
+
+        const row = event.target.closest("tr");
+
+        // Get row data
+        const time =
+            row.children[0].innerText;
+
+        const user =
+            row.children[1].innerText;
+
+        const action =
+            row.children[2].innerText;
+
+        // Load flagged logs
+        let flaggedLogs =
+            JSON.parse(localStorage.getItem("flaggedLogs")) || [];
+
+        // Remove matching flagged log
+        flaggedLogs = flaggedLogs.filter(log =>
+            !(
+                log.time === time &&
+                log.user === user &&
+                log.action === action
+            )
+        );
+
+        // Save updated logs
+        localStorage.setItem(
+            "flaggedLogs",
+            JSON.stringify(flaggedLogs)
+        );
+
+        // Ignore
+        if (event.target.classList.contains("ignore-button")) {
+
+            alert("Event ignored!");
+
+            row.remove();
+        }
+
+        // Suspend
+        if (event.target.classList.contains("suspend-button")) {
+
+            alert("User suspended!");
+
+            row.remove();
+        }
+    });
+}
+
+//create reports
+const generateReportBtn = document.getElementById("generateReportBtn");
+
+if (generateReportBtn) {
+    generateReportBtn.addEventListener("click", () => {
+        const reports =
+            JSON.parse(localStorage.getItem("systemReports")) || [];
+
+        const newReport = {
+            id: `RPT-${Date.now()}`,
+            timestamp: new Date().toLocaleString(),
+            logs: systemLogs
+        };
+
+        reports.push(newReport);
+
+        localStorage.setItem(
+            "systemReports",
+            JSON.stringify(reports)
+        );
+
+        alert("System report generated!");
+
+        window.location.href = "reports.html";
+    });
+}
+
+if (reportsOverviewTableBody) {
+    const reports =
+        JSON.parse(localStorage.getItem("systemReports")) || [];
+
+    reports.forEach((report) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${report.id}</td>
+            <td>${report.timestamp}</td>
+            <td class="button-col">
+                <button class="csv-button" data-id="${report.id}">
+                    CSV
+                </button>
+                <button class="pdf-button" data-id="${report.id}">
+                    PDF
+                </button>
+            </td>
+        `;
+
+        reportsOverviewTableBody.appendChild(row);
+    });
+}
+
+if (reportsOverviewTableBody) {
+    reportsOverviewTableBody.addEventListener("click", (event) => {
+        const reportID = event.target.dataset.id;
+
+        if (!reportID) return;
+
+        const reports =
+            JSON.parse(localStorage.getItem("systemReports")) || [];
+
+        const report =
+            reports.find(r => r.id === reportID);
+
+        if (!report) return;
+
+        if (event.target.classList.contains("csv-button")) {
+            exportReportCSV(report);
+        }
+
+        if (event.target.classList.contains("pdf-button")) {
+            exportReportPDF(report);
+        }
+    });
+}
+
+function exportReportCSV(report) {
+    let csv = "Time,User,Action\n";
+
+    report.logs.forEach(log => {
+        csv += `${log.time},${log.user},${log.action}\n`;
+    });
+
+    const blob = new Blob([csv], {
+        type: "text/csv"
+    });
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+    link.download = `${report.id}.csv`;
+
+    link.click();
+    
+}
+function exportReportPDF(report) {
+    let reportWindow = window.open("", "_blank");
+
+    let html = `
+        <html>
+        <head>
+            <title>${report.id}</title>
+        </head>
+        <body>
+            <h1>System Report</h1>
+            <p><strong>Report ID:</strong> ${report.id}</p>
+            <p><strong>Timestamp:</strong> ${report.timestamp}</p>
+
+            <table border="1" cellpadding="8">
+                <tr>
+                    <th>Time</th>
+                    <th>User</th>
+                    <th>Action</th>
+                </tr>
+    `;
+
+    report.logs.forEach(log => {
+        html += `
+            <tr>
+                <td>${log.time}</td>
+                <td>${log.user}</td>
+                <td>${log.action}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+            </table>
+        </body>
+        </html>
+    `;
+
+    reportWindow.document.write(html);
+    reportWindow.document.close();
+
+    reportWindow.print();
+}
