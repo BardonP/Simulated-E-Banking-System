@@ -35,17 +35,17 @@
                 <form id="profileForm">
                     <div class="textbox-form-group">
                         <label for="name">Name:</label>
-                        <input type="text" class="textbox-form-input" id="name" name="name" required>
+                        <input type="text" class="textbox-form-input" id="profileUsername" name="name" required>
                     </div>
                     <div class="textbox-form-group">
                         <label for="email">Email:</label>
-                        <input type="email" class="textbox-form-input" id="email" name="email" required>
+                        <input type="email" class="textbox-form-input" id="profileEmail" name="email" required>
                     </div>
-                    <div class="textbox-form-group">
-                        <label for="phone">Phone:</label>
-                        <input type="tel" class="textbox-form-input" id="phone" name="phone" required>
+                    <button type="button" class="submit-button" id="saveChanges">Save Changes</button>
+
+                    <div id="profileUpdateMessage" style="display: none;">
+                        <p id="profileUpdateMessageText"></p>
                     </div>
-                    <button class="submit-button">Save Changes</button>
                 </form>
             </section>
         </div>
