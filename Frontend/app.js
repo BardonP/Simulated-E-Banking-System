@@ -184,7 +184,7 @@ const savingsBalance = document.getElementById("savingsBalance");
 
 if (checkingBalance && savingsBalance) {
     checkingBalance.innerText = "$5,000.00";
-    savingsBalance.innerText = "$10,000.00";
+    savingsBalance.innerText = "$60,000.00";
 }
 
 //recent transactions (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR RECENT TRANSACTIONS----------------------
@@ -192,10 +192,10 @@ const transactionsTableBody = document.querySelector("#transactionsTable tbody")
 
 if (transactionsTableBody) {
     const transactions = [
-        { date: "2026-04-01", description: "Grocery Store", amount: "-$150.00" },
-        { date: "2026-03-28", description: "Direct Deposit", amount: "+$3,000.00" },
-        { date: "2026-03-25", description: "Electric Bill", amount: "-$120.00" },
-        { date: "2026-03-20", description: "Birthday Gift", amount: "+$75.00" },
+        { date: "04/04/2026", description: "Grocery Store", amount: "-$150.00" },
+        { date: "03/28/2026", description: "Direct Deposit", amount: "+$3,000.00" },
+        { date: "03/25/2026", description: "Electric Bill", amount: "-$120.00" },
+        { date: "03/20/2026", description: "Birthday Gift", amount: "+$75.00" },
     ];
     transactions.forEach((tx) => {
         const row = document.createElement("tr");
@@ -219,7 +219,7 @@ if (transferForm) {
         
         document.getElementById("transferMessage").style.display = "block";
 
-        const transferAmount = document.getElementById("transferAmount").value;
+        const transferAmount = parseFloat(document.getElementById("transferAmount").value.replace(/[$,]/g, ""));
         const accountFrom = document.getElementById("accountFrom").value;
         const accountTo = document.getElementById("accountTo").value;
         const message = document.getElementById("transferMessageText");
@@ -230,7 +230,7 @@ if (transferForm) {
         } else if (transferAmount <= 0 || transferAmount > 50000) {
             message.style.color = "red";
             message.innerText = "Error: Exceeds Limit";
-        } else if (transferAmount < 5000) { //-----------------------temp------------------------------CALL TO BACKEND TO CHECK IF FUNDS ARE SUFFICIENT------------
+        } else if (transferAmount == 5000.01) { //-----------------------5000.01 is temp------------------------------CALL TO BACKEND TO CHECK IF FUNDS ARE SUFFICIENT------------
             message.style.color = "red";
             message.innerText = "Error: Insufficient Funds";
         } else if (transferAmount > 10000) {
@@ -238,7 +238,8 @@ if (transferForm) {
             message.innerText = "Pending, Requires Review";
         } else {
             message.style.color = "green";
-            message.innerText = "Success, Transfer Complete!"; //-----------------------CALL TO BACKEND TO PROCESS TRANSFER----------------------
+            message.innerText = "Success, Transfer Complete!"; 
+            //-------------------------------------------------------------CALL TO BACKEND TO PROCESS TRANSFER AND CHANGE BALANCES----------------------
         }
     });
 }
@@ -256,7 +257,7 @@ if (payeeInput) {
         
         if (selectedPayee) {
             billDueDate.style.display = "block";
-            billDueDate.innerText = "05/05/2026"; //----------------------------------------REPLACE WITH ACTUAL DUE DATE FROM BACKEND-----------------
+            billDueDate.innerText = "05/01/2026"; //----------------------------------------REPLACE WITH ACTUAL DUE DATE FROM BACKEND-----------------
         } else {
             billDueDate.style.display = "none";
         }
@@ -273,16 +274,16 @@ if (billForm) {
 
         const payee = document.getElementById("payee").value;
         const dueDate = new Date(billDueDate.innerText);
-        const billAmount = document.getElementById("billAmount").value;
+        const billAmount = parseFloat(document.getElementById("billAmount").value.replace(/[$,]/g, ""));
         const message = document.getElementById("billMessageText");
 
         if (payee === "" || dueDate === "" || billAmount === "") {
             message.style.color = "red";
             message.innerText = "Error: Please Fill in All Fields";
-        } else if (billAmount <= 1000) { //-----------------------temp------------------------------CALL TO BACKEND TO CHECK IF FUNDS ARE SUFFICIENT------------
+        } else if (billAmount <= 1000) { //-----------------------1000 is temp------------------------------CALL TO BACKEND TO CHECK IF FUNDS ARE SUFFICIENT------------
             message.style.color = "red";
             message.innerText = "Error: Insufficient Funds";
-        } else if (dueDate < new Date()) { //-----------------temp-------------------CALL TO BACKEND TO CHECK IF DUE DATE IS VALID----------
+        } else if (dueDate < new Date()) { 
             message.style.color = "red";
             message.innerText = "Error: Overdue";
         } else {
@@ -316,6 +317,42 @@ if (billsTableBody) {
         billsTableBody.appendChild(row);
     });
 }
+
+//format currency input in bill pay form (also transfer amount form)
+document.addEventListener("DOMContentLoaded", function () {
+
+    const billInput = document.getElementById("billAmount");
+    const transferInput = document.getElementById("transferAmount");
+
+    function formatCurrencyInput(input) {
+
+        if (!input) return;
+
+        input.addEventListener("input", function (e) {
+
+            let value = e.target.value.replace(/[^0-9.]/g, "");
+
+            const parts = value.split(".");
+            if (parts.length > 2) {
+                value = parts[0] + "." + parts[1];
+            }
+
+            let [whole, decimal] = value.split(".");
+
+            whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            if (decimal !== undefined) {
+                e.target.value = `$${whole}.${decimal}`;
+            } else {
+                e.target.value = `$${whole}`;
+            }
+        });
+    }
+
+    formatCurrencyInput(billInput);
+    formatCurrencyInput(transferInput);
+
+});
 
 //-----------------------------------------------Profile Page-----------------------------
 //populate profile form with user data
