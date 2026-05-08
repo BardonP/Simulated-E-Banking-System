@@ -268,53 +268,122 @@ const billForm = document.getElementById("submitBill");
 
 if (billForm) {
     billForm.addEventListener("click", () => {
-        
+        const payee = document.getElementById("payee").value;
+        const billAmount = parseFloat(document.getElementById("billAmount").value);
+        const message = document.getElementById("billMessageText");
         document.getElementById("billMessage").style.display = "block";
 
-        const payee = document.getElementById("payee").value;
-        const dueDate = new Date(billDueDate.innerText);
-        const billAmount = document.getElementById("billAmount").value;
-        const message = document.getElementById("billMessageText");
-
-        if (payee === "" || dueDate === "" || billAmount === "") {
+        if (payee === "" || isNaN(billAmount) || billAmount <= 0) {
             message.style.color = "red";
-            message.innerText = "Error: Please Fill in All Fields";
-        } else if (billAmount <= 1000) { //-----------------------temp------------------------------CALL TO BACKEND TO CHECK IF FUNDS ARE SUFFICIENT------------
-            message.style.color = "red";
-            message.innerText = "Error: Insufficient Funds";
-        } else if (dueDate < new Date()) { //-----------------temp-------------------CALL TO BACKEND TO CHECK IF DUE DATE IS VALID----------
-            message.style.color = "red";
-            message.innerText = "Error: Overdue";
-        } else {
-            message.style.color = "green";
-            message.innerText = "Success, Payment Submitted!";
+            message.innerText = "Error: Please fill in all fields with valid amount";
+            return;
         }
+
+        // Assume customer user
+        fetch('/api/users')
+            .then(res => res.json())
+            .then(users => {
+                const user = users.find(u => u.username === 'customer');
+                if (user) {
+                    return fetch('/api/bills/pay', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: user.id, payee, amount: billAmount })
+                    });
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message) {
+                    message.style.color = "green";
+                    message.innerText = data.message;
+                    // Refresh bills table
+                    location.reload();
+                } else {
+                    message.style.color = "red";
+                    message.innerText = data.error || "Payment failed";
+                }
+            })
+            .catch(err => {
+                message.style.color = "red";
+                message.innerText = "Error: Unable to process payment";
+                console.error(err);
+            });
     });
 }
 
 //bills table (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR BILLS----------------------
 const billsTableBody = document.querySelector("#billsTable tbody");
+const accountList = document.getElementById("accountList");
 
-if (billsTableBody) {
-    const bills = [
-        { payee: "Rent", amount: "$1,200.00", dueDate: "05/01/2026", status: "Late" },
-        { payee: "Electricity", amount: "$200.00", dueDate: "05/09/2026", status: "Unpaid" },
-        { payee: "Water", amount: "$110.00", dueDate: "01/01/2026", status: "Complete" },
-        { payee: "Internet", amount: "$30.00", dueDate: "05/07/2026", status: "Pending" },
-    ];
-    bills.forEach((bill) => {
-        const row = document.createElement("tr");
-
-        const statusClass = bill.status === "Complete" ? "status-complete" : bill.status === "Pending" ? "status-pending" : bill.status === "Late" ? "status-late" : "status-unpaid";
-
-        row.innerHTML = `
-            <td>${bill.payee}</td>
-            <td>${bill.amount}</td>
-            <td>${bill.dueDate}</td>
-            <td class="${statusClass}">${bill.status}</td>
-        `;
-        billsTableBody.appendChild(row);
-    });
+if (billsTableBody || accountList) {
+    // Assume customer user
+    fetch('/api/users')
+        .then(res => res.json())
+        .then(users => {
+            const user = users.find(u => u.username === 'customer');
+            if (user) {
+                // Populate account types for dropdown
+                if (accountList) {
+                    if (billsTableBody) {
+                        // For bills page, populate with bill payees
+                        fetch(`/api/bills/${user.id}`)
+                            .then(res => res.json())
+                            .then(bills => {
+                                accountList.innerHTML = '';
+                                const uniquePayees = [...new Set(bills.map(bill => bill.payee))];
+                                uniquePayees.forEach(payee => {
+                                    const option = document.createElement('option');
+                                    option.value = payee;
+                                    accountList.appendChild(option);
+                                });
+                            })
+                            .catch(err => console.error('Error fetching bills for datalist:', err));
+                    } else {
+                        // For transfer page, populate with account types
+                        fetch(`/api/account-types/${user.id}`)
+                            .then(res => res.json())
+                            .then(accounts => {
+                                accountList.innerHTML = '';
+                                const uniqueTypes = [...new Set(accounts.map(acc => acc.type))];
+                                uniqueTypes.forEach(type => {
+                                    const option = document.createElement('option');
+                                    const typeLabel = type.charAt(0).toUpperCase() + type.slice(1) + ' Account';
+                                    option.value = typeLabel;
+                                    // Find the first account of this type for dataset
+                                    const account = accounts.find(acc => acc.type === type);
+                                    if (account) {
+                                        option.dataset.accountId = account.id;
+                                    }
+                                    accountList.appendChild(option);
+                                });
+                            })
+                            .catch(err => console.error('Error fetching account types:', err));
+                    }
+                }
+                // Load bills
+                return fetch(`/api/bills/${user.id}`);
+            }
+        })
+        .then(res => res.json())
+        .then(bills => {
+            // Populate table
+            if (billsTableBody) {
+                billsTableBody.innerHTML = '';
+                bills.forEach((bill) => {
+                    const row = document.createElement("tr");
+                    const statusClass = bill.status === "Complete" ? "status-complete" : bill.status === "Pending" ? "status-pending" : bill.status === "Late" ? "status-late" : "status-unpaid";
+                    row.innerHTML = `
+                        <td>${bill.payee}</td>
+                        <td>$${bill.amount.toFixed(2)}</td>
+                        <td>${bill.due_date ? new Date(bill.due_date).toLocaleDateString() : 'N/A'}</td>
+                        <td class="${statusClass}">${bill.status}</td>
+                    `;
+                    billsTableBody.appendChild(row);
+                });
+            }
+        })
+        .catch(err => console.error('Error fetching bills:', err));
 }
 
 //-----------------------------------------------Profile Page-----------------------------
@@ -344,7 +413,24 @@ if (saveChanges) {
 }
 
 //--------------------------------------Banker Dashboard---------------------------------
-//customer search autocomplete (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR CUSTOMER NAMES----------------------
+//customer search autocomplete (loaded from bank.db)
+const customerSuggestions = document.getElementById("customerSuggestions");
+
+if (customerSuggestions) {
+    fetch('/api/customers/names')
+        .then((response) => response.json())
+        .then((names) => {
+            customerSuggestions.innerHTML = '';
+            names.forEach((name) => {
+                const option = document.createElement('option');
+                option.value = name;
+                customerSuggestions.appendChild(option);
+            });
+        })
+        .catch((error) => {
+            console.error('Unable to load customer suggestions:', error);
+        });
+}
 
 //dashboard customer search button redirects to customer search page with query
 const customerSearchDash = document.getElementById("customerSearchDash");
@@ -377,127 +463,176 @@ const searchTables = document.getElementById("threeSearchTables");
         }
     }
 
-//pending transactions table (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR PENDING TRANSACTIONS----------------------
+//pending transactions table (loaded from database)----------------------CALL TO BACKEND FOR PENDING TRANSACTIONS----------------------
 const pendingTableBody = document.querySelector("#pendingTable tbody");
 
 if (pendingTableBody) {
-    const pendingTransactions = [
-        { from: "Jim Bean", to: "John Doe", amount: "$11,000.00", actions: "Approve/Deny" },
-        { from: "Jim Bean", to: "Tim Bob", amount: "$33,000.00", actions: "Approve/Deny" },
-        { from: "Michael Brown", to: "Ray Allen", amount: "$47,000.00", actions: "Approve/Deny" },
-    ];
-    pendingTransactions.forEach((transaction) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${transaction.from}</td>
-            <td>${transaction.to}</td>
-            <td>${transaction.amount}</td>
-            <td class="button-col"><div class="banker-actions-buttons"><button class="approve-button">Approve</button><button class="deny-button">Deny</button></div></td>
-        `;
-        pendingTableBody.appendChild(row);
-    });
+    function loadPendingTransfers() {
+        fetch('/api/pending-transfers')
+            .then(res => res.json())
+            .then(transfers => {
+                pendingTableBody.innerHTML = '';
+                transfers.forEach((transfer) => {
+                    const row = document.createElement("tr");
+                    row.dataset.transferId = transfer.id;
+                    row.innerHTML = `
+                        <td>${transfer.from_name} (${transfer.from_type})</td>
+                        <td>${transfer.to_name} (${transfer.to_type})</td>
+                        <td>$${transfer.amount.toFixed(2)}</td>
+                        <td class="button-col"><div class="banker-actions-buttons"><button class="approve-button">Approve</button><button class="deny-button">Deny</button></div></td>
+                    `;
+                    pendingTableBody.appendChild(row);
+                });
+            })
+            .catch(err => console.error('Error fetching pending transfers:', err));
+    }
+    // Load on page load
+    loadPendingTransfers();
 }
 
-//approve and deny buttons (temporary functionality for testing)----------------------CALL TO BACKEND TO APPROVE OR DENY TRANSFER----------------------
+//approve and deny buttons (call backend to process)----------------------CALL TO BACKEND TO APPROVE OR DENY TRANSFER----------------------
 if (pendingTableBody) {
     pendingTableBody.addEventListener("click", (event) => {
+        const row = event.target.closest("tr");
+        const transferId = row.dataset.transferId;
 
         // Approve
         if (event.target.classList.contains("approve-button")) {
-
-            alert("Transfer Approved!");
-
-            // Remove row
-            event.target.closest("tr").remove();
+            fetch(`/api/pending-transfers/${transferId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'approve' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("Transfer Approved!");
+                row.remove();
+                // Reload pending transfers
+                const pendingTableBody = document.querySelector("#pendingTable tbody");
+                if (pendingTableBody && pendingTableBody.closest('body')) {
+                    loadPendingTransfers();
+                }
+            })
+            .catch(err => {
+                alert('Error approving transfer');
+                console.error(err);
+            });
         }
 
         // Deny
         if (event.target.classList.contains("deny-button")) {
-
-            alert("Transfer Denied!");
-
-            // Remove row
-            event.target.closest("tr").remove();
+            fetch(`/api/pending-transfers/${transferId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'deny' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("Transfer Denied!");
+                row.remove();
+                // Reload pending transfers
+                const pendingTableBody = document.querySelector("#pendingTable tbody");
+                if (pendingTableBody && pendingTableBody.closest('body')) {
+                    loadPendingTransfers();
+                }
+            })
+            .catch(err => {
+                alert('Error denying transfer');
+                console.error(err);
+            });
         }
     });
 }
 
 //------------------------------------------------Customer Search---------------------------------
-//customer search button on customer search page displays tables with results 
+//customer search button on customer search page displays tables with results
 const customerSearch = document.getElementById("customerSearchSearch");
 
 if (customerSearch) {
     customerSearch.addEventListener("click", () => {
+        const customerSearchInput = document.getElementById("customerSearchInput");
         if (customerSearchInput.value === "") {
             alert("Please enter a customer name or ID to search.");
             return;
-        } else {
-            //-------------------------------------------------------------------------------------------------CALL TO BACKEND TO QUERY----------------------
-            document.getElementById("threeSearchTables").style.display = "block";
         }
-    });
-}
-
-//customer search results tables
-const customerAccountTableBody = document.querySelector("#customerAccountTable tbody");
-
-if (customerAccountTableBody) {
-    const customerAccounts = [
-        { accountType: "Checking", balance: "$1,000.00" },
-        { accountType: "Savings", balance: "$5,000.00" },
-    ];
-    customerAccounts.forEach((account) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${account.accountType}</td>
-            <td>${account.balance}</td>
-        `;
-        customerAccountTableBody.appendChild(row);
-    });
-}
-
-const customerTransactionHistoryTableBody = document.querySelector("#customerTransactionHistoryTable tbody");
-
-if (customerTransactionHistoryTableBody) {
-    const customerTransactionHistory = [
-        { date: "05/01/2026", to: "John Doe", type: "Sent", amount: "$1,000.00" },
-        { date: "05/03/2026", to: "Jane Smith", type: "Received", amount: "$500.00" },
-    ];
-    customerTransactionHistory.forEach((custTransaction) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${custTransaction.date}</td>
-            <td>${custTransaction.to}</td>
-            <td>${custTransaction.type}</td>
-            <td>${custTransaction.amount}</td>
-        `;
-        customerTransactionHistoryTableBody.appendChild(row);
-    });
-}
-const customerBillsTableBody = document.querySelector("#customerBillsTable tbody");
-
-if (customerBillsTableBody) {
-    const customerBills = [
-        { payee: "Rent", amount: "$1,200.00", deadline: "05/01/2026", status: "Late" },
-        { payee: "Electricity", amount: "$200.00", deadline: "05/09/2026", status: "Unpaid" },
-        { payee: "Water", amount: "$110.00", deadline: "01/01/2026", status: "Complete" },
-        { payee: "Internet", amount: "$30.00", deadline: "05/07/2026", status: "Pending" },
-    ];
-    customerBills.forEach((bill) => {
-        const row = document.createElement("tr");
-
-        const statusClass = bill.status === "Complete" ? "status-complete" : bill.status === "Pending" ? "status-pending" : bill.status === "Late" ? "status-late" : "status-unpaid";
-
-        row.innerHTML = `
-            <td>${bill.payee}</td>
-            <td>${bill.amount}</td>
-            <td>${bill.deadline}</td>
-            <td class="${statusClass}">${bill.status}</td>
-        `;
-        customerBillsTableBody.appendChild(row);
+        const query = customerSearchInput.value.trim();
+        // Fetch user by name
+        fetch(`/api/users/search?name=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(user => {
+                if (!user) {
+                    alert("Customer not found.");
+                    return;
+                }
+                // Fetch accounts
+                return fetch(`/api/accounts/${user.id}`)
+                    .then(res => res.json())
+                    .then(accounts => ({ user, accounts }));
+            })
+            .then(({ user, accounts }) => {
+                // Populate accounts table
+                const customerAccountTableBody = document.querySelector("#customerAccountTable tbody");
+                if (customerAccountTableBody) {
+                    customerAccountTableBody.innerHTML = '';
+                    accounts.forEach(account => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${account.type.charAt(0).toUpperCase() + account.type.slice(1)}</td>
+                            <td>$${account.balance.toFixed(2)}</td>
+                        `;
+                        customerAccountTableBody.appendChild(row);
+                    });
+                }
+                // Fetch transactions
+                return fetch(`/api/transactions/${user.id}`)
+                    .then(res => res.json())
+                    .then(transactions => ({ user, accounts, transactions }));
+            })
+            .then(({ user, accounts, transactions }) => {
+                // Populate transactions table
+                const customerTransactionHistoryTableBody = document.querySelector("#customerTransactionHistoryTable tbody");
+                if (customerTransactionHistoryTableBody) {
+                    customerTransactionHistoryTableBody.innerHTML = '';
+                    transactions.slice(0, 5).forEach(tx => { // Show last 5
+                        const row = document.createElement("tr");
+                        const amountClass = tx.amount > 0 ? 'positive' : 'negative';
+                        row.innerHTML = `
+                            <td>${new Date(tx.date).toLocaleDateString()}</td>
+                            <td>${tx.description || 'Transfer'}</td>
+                            <td class="${amountClass}">$${Math.abs(tx.amount).toFixed(2)}</td>
+                        `;
+                        customerTransactionHistoryTableBody.appendChild(row);
+                    });
+                }
+                // Fetch bills
+                return fetch(`/api/bills/${user.id}`)
+                    .then(res => res.json())
+                    .then(bills => ({ user, accounts, transactions, bills }));
+            })
+            .then(({ user, accounts, transactions, bills }) => {
+                // Populate bills table
+                const customerBillsTableBody = document.querySelector("#customerBillsTable tbody");
+                if (customerBillsTableBody) {
+                    customerBillsTableBody.innerHTML = '';
+                    bills.forEach(bill => {
+                        const row = document.createElement("tr");
+                        const statusClass = bill.status === "Complete" ? "status-complete" : bill.status === "Pending" ? "status-pending" : bill.status === "Late" ? "status-late" : "status-unpaid";
+                        row.innerHTML = `
+                            <td>${bill.payee}</td>
+                            <td>$${bill.amount.toFixed(2)}</td>
+                            <td>${bill.due_date ? new Date(bill.due_date).toLocaleDateString() : 'N/A'}</td>
+                            <td class="${statusClass}">${bill.status}</td>
+                        `;
+                        customerBillsTableBody.appendChild(row);
+                    });
+                }
+                // Show tables
+                document.getElementById("threeSearchTables").style.display = "block";
+            })
+            .catch(err => {
+                console.error('Error searching customer:', err);
+                alert("Error searching customer.");
+            });
     });
 }
 
@@ -558,27 +693,7 @@ if (systemLogsTableBody) {
     });
 }
 
-const flaggedEventsTableBody =
-    document.querySelector("#flaggedEventsTable tbody");
-
-if (flaggedEventsTableBody) {
-    const flaggedLogs =
-        JSON.parse(localStorage.getItem("flaggedLogs")) || [];
-
-    flaggedLogs.forEach((log) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${log.time}</td>
-            <td>${log.user}</td>
-            <td>${log.action}</td>
-            <td>${log.details}</td>
-            <td class="button-col"><div class="admin-actions-buttons"><button class="ignore-button">Ignore</button><button class="suspend-button">Suspend</button></div></td>
-        `;
-
-        flaggedEventsTableBody.appendChild(row);
-    });
-}
+// Flagged events populated from database above
 
 //Show system limit
 const currentTransferLimit = document.getElementById("currentTransferLimit");
@@ -626,21 +741,7 @@ if (assignRoleBtn) {
 }
 
 //----------------------------------------------Reports Page----------------------------------------
-//reports  overview table
-const reportsOverviewTableBody = document.querySelector("#reportsOverviewTable tbody");
-
-if (reportsOverviewTableBody) {
-    const reports = [];
-    reports.forEach((report) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${report.reportId}</td>
-            <td>${report.timestamp}</td>
-            <td class="button-col"><div class="admin-actions-buttons"><button class="csv-button">CSV</button><button class="pdf-button">PDF</button></div></td>
-        `;
-        reportsOverviewTableBody.appendChild(row);
-    });
-}
+// Reports overview table is populated from database above
 
 //review flagged events buttons
 if (flaggedEventsTableBody) {
