@@ -633,7 +633,7 @@ if (updateLimitBtn) {
 
         const limitInput = parseFloat(document.getElementById("limitAmount").value.replace(/[$,]/g, ""));
 
-        if (limitInput === "" || limitInput < 50000) {
+        if (isNaN(limitInput) || limitInput < 50000) {
             alert("Please enter a valid limit (must be at least $50,000).");
             return;
         } 
