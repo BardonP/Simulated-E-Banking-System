@@ -184,7 +184,7 @@ const savingsBalance = document.getElementById("savingsBalance");
 
 if (checkingBalance && savingsBalance) {
     checkingBalance.innerText = "$5,000.00";
-    savingsBalance.innerText = "$10,000.00";
+    savingsBalance.innerText = "$60,000.00";
 }
 
 //recent transactions (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR RECENT TRANSACTIONS----------------------
@@ -192,10 +192,10 @@ const transactionsTableBody = document.querySelector("#transactionsTable tbody")
 
 if (transactionsTableBody) {
     const transactions = [
-        { date: "2026-04-01", description: "Grocery Store", amount: "-$150.00" },
-        { date: "2026-03-28", description: "Direct Deposit", amount: "+$3,000.00" },
-        { date: "2026-03-25", description: "Electric Bill", amount: "-$120.00" },
-        { date: "2026-03-20", description: "Birthday Gift", amount: "+$75.00" },
+        { date: "04/04/2026", description: "Grocery Store", amount: "-$150.00" },
+        { date: "03/28/2026", description: "Direct Deposit", amount: "+$3,000.00" },
+        { date: "03/25/2026", description: "Electric Bill", amount: "-$120.00" },
+        { date: "03/20/2026", description: "Birthday Gift", amount: "+$75.00" },
     ];
     transactions.forEach((tx) => {
         const row = document.createElement("tr");
@@ -219,7 +219,7 @@ if (transferForm) {
         
         document.getElementById("transferMessage").style.display = "block";
 
-        const transferAmount = document.getElementById("transferAmount").value;
+        const transferAmount = parseFloat(document.getElementById("transferAmount").value.replace(/[$,]/g, ""));
         const accountFrom = document.getElementById("accountFrom").value;
         const accountTo = document.getElementById("accountTo").value;
         const message = document.getElementById("transferMessageText");
@@ -230,7 +230,7 @@ if (transferForm) {
         } else if (transferAmount <= 0 || transferAmount > 50000) {
             message.style.color = "red";
             message.innerText = "Error: Exceeds Limit";
-        } else if (transferAmount < 5000) { //-----------------------temp------------------------------CALL TO BACKEND TO CHECK IF FUNDS ARE SUFFICIENT------------
+        } else if (transferAmount == 5000.01) { //-----------------------5000.01 is temp------------------------------CALL TO BACKEND TO CHECK IF FUNDS ARE SUFFICIENT------------
             message.style.color = "red";
             message.innerText = "Error: Insufficient Funds";
         } else if (transferAmount > 10000) {
@@ -238,7 +238,8 @@ if (transferForm) {
             message.innerText = "Pending, Requires Review";
         } else {
             message.style.color = "green";
-            message.innerText = "Success, Transfer Complete!"; //-----------------------CALL TO BACKEND TO PROCESS TRANSFER----------------------
+            message.innerText = "Success, Transfer Complete!"; 
+            //-------------------------------------------------------------CALL TO BACKEND TO PROCESS TRANSFER AND CHANGE BALANCES----------------------
         }
     });
 }
@@ -256,7 +257,7 @@ if (payeeInput) {
         
         if (selectedPayee) {
             billDueDate.style.display = "block";
-            billDueDate.innerText = "05/05/2026"; //----------------------------------------REPLACE WITH ACTUAL DUE DATE FROM BACKEND-----------------
+            billDueDate.innerText = "05/01/2026"; //----------------------------------------REPLACE WITH ACTUAL DUE DATE FROM BACKEND-----------------
         } else {
             billDueDate.style.display = "none";
         }
@@ -385,6 +386,44 @@ if (billsTableBody || accountList) {
         })
         .catch(err => console.error('Error fetching bills:', err));
 }
+
+//format currency input in bill pay form (also transfer amount form) (also system limit input form)
+document.addEventListener("DOMContentLoaded", function () {
+
+    const billInput = document.getElementById("billAmount");
+    const transferInput = document.getElementById("transferAmount");
+    const systemLimitInput = document.getElementById("limitAmount");
+
+    function formatCurrencyInput(input) {
+
+        if (!input) return;
+
+        input.addEventListener("input", function (e) {
+
+            let value = e.target.value.replace(/[^0-9.]/g, "");
+
+            const parts = value.split(".");
+            if (parts.length > 2) {
+                value = parts[0] + "." + parts[1];
+            }
+
+            let [whole, decimal] = value.split(".");
+
+            whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            if (decimal !== undefined) {
+                e.target.value = `$${whole}.${decimal}`;
+            } else {
+                e.target.value = `$${whole}`;
+            }
+        });
+    }
+
+    formatCurrencyInput(billInput);
+    formatCurrencyInput(transferInput);
+    formatCurrencyInput(systemLimitInput);
+
+});
 
 //-----------------------------------------------Profile Page-----------------------------
 //populate profile form with user data
@@ -637,12 +676,12 @@ if (customerSearch) {
 }
 
 //---------------------------------------------Admin Dashboard--------------------------------------
-//system logs table (temporary hardcoded values for testing)----------------------CALL TO BACKEND FOR SYSTEM LOGS----------------------
+//system logs table
 const systemLogsTableBody = document.querySelector("#systemLogsTable tbody");
 const systemLogs = [ //---------------------------------------------temp------------------------------CALL TO BACKEND FOR SYSTEM LOGS----------------------
-        { time: "05/01/2026 10:00", user: "John Doe", action: "Login" },
-        { time: "05/01/2026 17:00", user: "Jane Smith", action: "Transfer Funds" },
         { time: "05/02/2026 09:30", user: "Michael Brown", action: "Pay Bill" },
+        { time: "05/01/2026 17:00", user: "Jane Smith", action: "Transfer Funds" },
+        { time: "05/01/2026 10:00", user: "John Doe", action: "Login" },
     ];
 
 if (systemLogsTableBody) {
@@ -658,8 +697,7 @@ if (systemLogsTableBody) {
 
         row.querySelector(".flag-button").addEventListener("click", () => {
 
-            const flaggedLogs =
-                JSON.parse(localStorage.getItem("flaggedLogs")) || [];
+            const flaggedLogs = JSON.parse(localStorage.getItem("flaggedLogs")) || [];
 
             // Check if already flagged
             const alreadyFlagged = flaggedLogs.some(flaggedLog =>
@@ -678,7 +716,7 @@ if (systemLogsTableBody) {
                 time: log.time,
                 user: log.user,
                 action: log.action,
-                details: "Email: user@example.com" //-------temp-------------------------------CALL TO BACKEND TO GET USER EMAIL----------------------
+                details: "Email: johnD@example.com" //-------temp-------------------------------CALL TO BACKEND TO GET USER EMAIL----------------------
             });
 
             localStorage.setItem(
@@ -706,16 +744,18 @@ if (currentTransferLimit) {
 
 //update system limit
 const updateLimitBtn = document.getElementById("updateLimitBtn");
-const limitInput = document.getElementById("limitAmount");
 
 if (updateLimitBtn) {
     updateLimitBtn.addEventListener("click", () => {
-        if (limitInput.value === "" || limitInput.value < 50000) {
+
+        const limitInput = parseFloat(document.getElementById("limitAmount").value.replace(/[$,]/g, ""));
+
+        if (isNaN(limitInput) || limitInput < 50000) {
             alert("Please enter a valid limit (must be at least $50,000).");
             return;
         } 
 
-        const newLimit = limitInput.value; //-------temp-------------------------------CALL TO BACKEND TO UPDATE LIMIT----------------------
+        const newLimit = limitInput; //-------temp--------------------------------------------CALL TO BACKEND TO UPDATE LIMIT----------------------
         
         localStorage.setItem("systemTransferLimit", newLimit);
 
@@ -728,7 +768,7 @@ if (updateLimitBtn) {
 }
 
 //----------------------------------------------User Management--------------------------------------
-//add assign role functionality (temporary for testing)-------------------------------------------------CALL TO BACKEND TO ASSIGN ROLE----------------------
+//add assign role functionality 
 const assignRoleBtn = document.getElementById("assignRoleBtn");
 
 if (assignRoleBtn) {
@@ -751,18 +791,14 @@ if (flaggedEventsTableBody) {
         const row = event.target.closest("tr");
 
         // Get row data
-        const time =
-            row.children[0].innerText;
+        const time = row.children[0].innerText;
 
-        const user =
-            row.children[1].innerText;
+        const user = row.children[1].innerText;
 
-        const action =
-            row.children[2].innerText;
+        const action = row.children[2].innerText;
 
         // Load flagged logs
-        let flaggedLogs =
-            JSON.parse(localStorage.getItem("flaggedLogs")) || [];
+        let flaggedLogs = JSON.parse(localStorage.getItem("flaggedLogs")) || [];
 
         // Remove matching flagged log
         flaggedLogs = flaggedLogs.filter(log =>
@@ -802,8 +838,7 @@ const generateReportBtn = document.getElementById("generateReportBtn");
 
 if (generateReportBtn) {
     generateReportBtn.addEventListener("click", () => {
-        const reports =
-            JSON.parse(localStorage.getItem("systemReports")) || [];
+        const reports = JSON.parse(localStorage.getItem("systemReports")) || [];
 
         const newReport = {
             id: `RPT-${Date.now()}`,
@@ -825,8 +860,7 @@ if (generateReportBtn) {
 }
 
 if (reportsOverviewTableBody) {
-    const reports =
-        JSON.parse(localStorage.getItem("systemReports")) || [];
+    const reports = JSON.parse(localStorage.getItem("systemReports")) || [];
 
     reports.forEach((report) => {
         const row = document.createElement("tr");
@@ -854,11 +888,9 @@ if (reportsOverviewTableBody) {
 
         if (!reportID) return;
 
-        const reports =
-            JSON.parse(localStorage.getItem("systemReports")) || [];
+        const reports = JSON.parse(localStorage.getItem("systemReports")) || [];
 
-        const report =
-            reports.find(r => r.id === reportID);
+        const report = reports.find(r => r.id === reportID);
 
         if (!report) return;
 
@@ -875,13 +907,9 @@ if (reportsOverviewTableBody) {
 function exportReportCSV(report) {
     let csv = "Time,User,Action\n";
 
-    report.logs.forEach(log => {
-        csv += `${log.time},${log.user},${log.action}\n`;
-    });
+    report.logs.forEach(log => {csv += `${log.time},${log.user},${log.action}\n`;});
 
-    const blob = new Blob([csv], {
-        type: "text/csv"
-    });
+    const blob = new Blob([csv], {type: "text/csv"});
 
     const link = document.createElement("a");
 
